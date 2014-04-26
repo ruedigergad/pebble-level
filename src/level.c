@@ -128,7 +128,7 @@ void accel_handler(AccelData *data, uint32_t num_samples)
         }
 
         // Log current acceleration data.
-        DataLoggingResult r = data_logging_log(my_data_log, accel_normalized, 3);
+        DataLoggingResult r = data_logging_log(my_data_log, &accel_normalized, 3);
 
         // Get the angle from vertical in integer decidegrees.
         int a = fix16_acos(fix16_abs(accel_normalized[2])) * 1800 / fix16_pi;
@@ -345,7 +345,7 @@ void persist_check_int(uint32_t key, int *value)
 void init(void)
 {
     // Init data logging
-    my_data_log = data_logging_create(42, DATA_LOGGING_INT, 2, true);
+    my_data_log = data_logging_create(16, DATA_LOGGING_INT, sizeof(fix16_t), false);
 
     // Read settings from persistent storage.
 
