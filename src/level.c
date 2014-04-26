@@ -44,6 +44,9 @@ fix16_t accel_normalized[3];
 // Filter states.
 int filter_state[3];
 
+// Data logging...
+DataLoggingSessionRef my_data_log;
+
 // Values for display_style.
 enum
 {
@@ -124,6 +127,9 @@ void accel_handler(AccelData *data, uint32_t num_samples)
             accel_normalized[i] = fix16_div(fix16_from_int(accel_raw[i]), mag);
         }
 
+        // Log current acceleration data.
+        DataLoggingResult r = data_logging_log(my_data_log, accel_normalized, 3);
+
         // Get the angle from vertical in integer decidegrees.
         int a = fix16_acos(fix16_abs(accel_normalized[2])) * 1800 / fix16_pi;
 
@@ -132,7 +138,7 @@ void accel_handler(AccelData *data, uint32_t num_samples)
         int f = a % 10;
 
         // Update the angle text.
-        snprintf(angle_text, sizeof(angle_text), "%d.%d\u00B0", i, f);
+        snprintf(angle_text, sizeof(angle_text), "%d.%d\u00B0 - %d", i, f, r);
         text_layer_set_text(angle_layer, angle_text);
 
         // Redraw the display layer.
@@ -338,6 +344,9 @@ void persist_check_int(uint32_t key, int *value)
 
 void init(void)
 {
+    // Init data logging
+    my_data_log = data_logging_create(42, DATA_LOGGING_INT, 2, true);
+
     // Read settings from persistent storage.
 
     persist_check_int(KEY_DISPLAY_STYLE, &display_style);
@@ -370,6 +379,8 @@ void init(void)
 
 void deinit(void)
 {
+    data_logging_finish(my_data_log);
+
     window_destroy(display_window);
     window_destroy(main_menu.window);
     simple_menu_layer_destroy(main_menu.menu);
