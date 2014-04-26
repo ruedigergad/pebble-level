@@ -128,8 +128,8 @@ void accel_handler(AccelData *data, uint32_t num_samples)
         }
 
         // Log current acceleration data.
-        //DataLoggingResult r = data_logging_log(my_data_log, &accel_normalized, 3);
-        app_log(APP_LOG_LEVEL_INFO, "accel_data", 1, "%d,%d,%d", (int) accel_normalized[0], (int) accel_normalized[1], (int) accel_normalized[2]);
+        DataLoggingResult r = data_logging_log(my_data_log, &accel_normalized, 3);
+        //app_log(APP_LOG_LEVEL_INFO, "accel_data", 1, "%d,%d,%d", (int) accel_normalized[0], (int) accel_normalized[1], (int) accel_normalized[2]);
 
         // Get the angle from vertical in integer decidegrees.
         int a = fix16_acos(fix16_abs(accel_normalized[2])) * 1800 / fix16_pi;
