@@ -128,7 +128,8 @@ void accel_handler(AccelData *data, uint32_t num_samples)
         }
 
         // Log current acceleration data.
-        DataLoggingResult r = data_logging_log(my_data_log, &accel_normalized, 3);
+        //DataLoggingResult r = data_logging_log(my_data_log, &accel_normalized, 3);
+        app_log(APP_LOG_LEVEL_INFO, "accel_data", 1, "%d,%d,%d", (int) accel_normalized[0], (int) accel_normalized[1], (int) accel_normalized[2]);
 
         // Get the angle from vertical in integer decidegrees.
         int a = fix16_acos(fix16_abs(accel_normalized[2])) * 1800 / fix16_pi;
@@ -138,7 +139,7 @@ void accel_handler(AccelData *data, uint32_t num_samples)
         int f = a % 10;
 
         // Update the angle text.
-        snprintf(angle_text, sizeof(angle_text), "%d.%d\u00B0 - %d", i, f, r);
+        snprintf(angle_text, sizeof(angle_text), "%d.%d\u00B0", i, f);
         text_layer_set_text(angle_layer, angle_text);
 
         // Redraw the display layer.
